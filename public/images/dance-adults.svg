@@ -1,0 +1,35 @@
+<svg width="800" height="520" viewBox="0 0 800 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="70" y1="30" x2="760" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1E1B4B"/>
+      <stop offset="0.5" stop-color="#7E22CE"/>
+      <stop offset="1" stop-color="#F97316"/>
+    </linearGradient>
+    <radialGradient id="stage" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(402 180) rotate(90) scale(220 330)">
+      <stop stop-color="#FED7AA" stop-opacity="0.82"/>
+      <stop offset="1" stop-color="#FED7AA" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="520" fill="url(#bg)"/>
+  <ellipse cx="400" cy="200" rx="290" ry="165" fill="url(#stage)"/>
+  <rect y="350" width="800" height="170" fill="#09090F" fill-opacity="0.56"/>
+
+  <g fill="#130D1F">
+    <ellipse cx="400" cy="458" rx="188" ry="24" fill="#06060C" fill-opacity="0.62"/>
+    <path d="M344 210c23 0 42 17 45 40 3 18-4 32-15 44l33 123h-24l-29-90-8 99h-18l-8-99-29 90h-24l33-123c-11-12-18-26-15-44 3-23 22-40 45-40Z"/>
+    <path d="M468 226c21 0 38 16 40 37 2 15-4 28-13 39l30 112h-22l-26-82-7 90h-17l-7-90-26 82h-22l30-112c-9-11-15-24-13-39 2-21 19-37 40-37Z"/>
+    <circle cx="344" cy="182" r="29" fill="#24143A"/>
+    <circle cx="468" cy="198" r="25" fill="#26193D"/>
+    <path d="M300 300 242 284c-25-6-41-32-35-57l1-4 106 30-14 31Z" fill="#1E1532"/>
+    <path d="M513 318 575 300c24-7 39-31 34-55l-2-8-111 31 17 50Z" fill="#1E1532"/>
+  </g>
+
+  <g fill="#FEF3C7" opacity="0.9">
+    <circle cx="166" cy="126" r="2.6"/>
+    <circle cx="214" cy="92" r="2"/>
+    <circle cx="626" cy="114" r="2.7"/>
+    <circle cx="684" cy="86" r="2.2"/>
+    <circle cx="574" cy="158" r="2.3"/>
+  </g>
+</svg>

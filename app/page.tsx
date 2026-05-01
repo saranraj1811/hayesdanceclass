@@ -54,25 +54,25 @@ export default function Home() {
             {
               title: "Kids & Adults",
               icon: Users,
-              image: "/images/dance-kids.webp",
+              image: "/images/dance-kids.svg",
               alt: "Kids dance class silhouettes with colourful stage lights",
             },
             {
               title: "Bollywood & South Indian Styles",
               icon: MicVocal,
-              image: "/images/bollywood-style.webp",
+              image: "/images/bollywood-style.svg",
               alt: "Bollywood style dance visuals with vibrant colors",
             },
             {
               title: "Weekend Classes",
               icon: Clock3,
-              image: "/images/dance-adults.webp",
+              image: "/images/dance-adults.svg",
               alt: "Adults dance group with dramatic warm stage lighting",
             },
             {
               title: "Hayes & Harlington Location",
               icon: MapPin,
-              image: "/images/south-indian-style.webp",
+              image: "/images/south-indian-style.svg",
               alt: "South Indian dance inspired scene with festival colors",
             },
           ].map((item) => (
@@ -110,7 +110,7 @@ export default function Home() {
           </div>
           <div className="relative h-48 overflow-hidden rounded-2xl border border-orange-100/30">
             <Image
-              src="/images/dance-adults.webp"
+              src="/images/dance-adults.svg"
               alt="Stage lighting and dancer silhouettes in warm gold and pink tones"
               fill
               sizes="(max-width: 1024px) 100vw, 35vw"

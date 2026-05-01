@@ -36,7 +36,7 @@ export function HeroDanceVideo() {
     <div className="relative overflow-hidden rounded-3xl border border-white/20 bg-slate-950/60 shadow-[0_20px_70px_rgba(14,116,144,0.25)]">
       <div className="relative aspect-video w-full">
         <Image
-          src="/images/dance-hero-poster.webp"
+          src="/images/dance-hero-poster.svg"
           alt="Energetic dance stage lighting background"
           fill
           sizes="(max-width: 1024px) 100vw, 58vw"
@@ -51,7 +51,7 @@ export function HeroDanceVideo() {
             loop
             playsInline
             preload="none"
-            poster="/images/dance-hero-poster.webp"
+            poster="/images/dance-hero-poster.svg"
             onError={() => setVideoFailed(true)}
             aria-label="Hero dance ambience video"
           >

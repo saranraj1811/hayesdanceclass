@@ -1,0 +1,33 @@
+<svg width="800" height="520" viewBox="0 0 800 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="40" x2="760" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#32105B"/>
+      <stop offset="0.45" stop-color="#9333EA"/>
+      <stop offset="1" stop-color="#FB7185"/>
+    </linearGradient>
+    <radialGradient id="beam" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(390 170) rotate(90) scale(220 380)">
+      <stop stop-color="#FDE68A" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#FDE68A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="520" fill="url(#bg)"/>
+  <ellipse cx="400" cy="210" rx="300" ry="170" fill="url(#beam)"/>
+  <rect y="340" width="800" height="180" fill="#0B0A16" fill-opacity="0.55"/>
+
+  <g fill="#120D21">
+    <ellipse cx="400" cy="456" rx="170" ry="24" fill="#09070F" fill-opacity="0.6"/>
+    <path d="M290 276c18 0 34 14 36 33 2 14-4 25-12 35l26 96h-20l-24-72-8 78h-16l-8-78-24 72h-20l26-96c-8-10-14-21-12-35 2-19 18-33 36-33Z"/>
+    <path d="M474 256c22 0 40 17 43 39 2 16-4 29-14 39l31 112h-24l-27-83-8 90h-18l-8-90-27 83h-24l31-112c-10-10-16-23-14-39 3-22 21-39 43-39Z"/>
+    <circle cx="290" cy="238" r="24" fill="#201435"/>
+    <circle cx="474" cy="228" r="28" fill="#24163A"/>
+  </g>
+
+  <g fill="#FDF2F8" opacity="0.9">
+    <circle cx="152" cy="120" r="2.5"/>
+    <circle cx="228" cy="82" r="2"/>
+    <circle cx="640" cy="108" r="2.8"/>
+    <circle cx="706" cy="76" r="2"/>
+    <circle cx="570" cy="154" r="2.3"/>
+  </g>
+</svg>

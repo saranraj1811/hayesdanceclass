@@ -1,0 +1,54 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="140" y1="40" x2="1180" y2="680" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2A0A4A"/>
+      <stop offset="0.4" stop-color="#6D1E73"/>
+      <stop offset="0.72" stop-color="#D63F7D"/>
+      <stop offset="1" stop-color="#F59E0B"/>
+    </linearGradient>
+    <radialGradient id="spotA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(320 160) rotate(36) scale(410 270)">
+      <stop stop-color="#FDE68A" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#FDE68A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="spotB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(980 210) rotate(-22) scale(380 250)">
+      <stop stop-color="#F9A8D4" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#F9A8D4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="floor" x1="640" y1="465" x2="640" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#140C26" stop-opacity="0"/>
+      <stop offset="1" stop-color="#07070E"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <ellipse cx="640" cy="230" rx="560" ry="220" fill="url(#spotA)"/>
+  <ellipse cx="660" cy="250" rx="520" ry="230" fill="url(#spotB)"/>
+  <rect y="465" width="1280" height="255" fill="url(#floor)"/>
+
+  <g opacity="0.55" stroke="#FCD34D" stroke-width="2">
+    <line x1="140" y1="0" x2="500" y2="540"/>
+    <line x1="280" y1="0" x2="560" y2="560"/>
+    <line x1="1150" y1="0" x2="780" y2="560"/>
+    <line x1="990" y1="0" x2="730" y2="560"/>
+  </g>
+
+  <g fill="#FDF2F8" opacity="0.85">
+    <circle cx="210" cy="155" r="3"/>
+    <circle cx="410" cy="95" r="2.4"/>
+    <circle cx="560" cy="155" r="2.8"/>
+    <circle cx="790" cy="120" r="2.4"/>
+    <circle cx="1030" cy="170" r="3.2"/>
+    <circle cx="1110" cy="92" r="2.2"/>
+  </g>
+
+  <g fill="#160F24">
+    <ellipse cx="640" cy="640" rx="260" ry="36" fill="#0E0A18" opacity="0.65"/>
+    <path d="M640 290c40 0 74 30 80 74 5 34-8 60-26 84l-14 20 58 172h-34l-54-150-10 160h-28l-10-160-54 150h-34l58-172-14-20c-18-24-31-50-26-84 6-44 40-74 80-74Z"/>
+    <path d="M550 384c52-26 88-44 90-44s38 18 90 44c24 12 36 44 24 67-12 22-40 31-62 20l-52-26-52 26c-22 11-50 2-62-20-12-23 0-55 24-67Z" fill="#1E1531"/>
+    <path d="M588 248c0 29 23 52 52 52s52-23 52-52-23-52-52-52-52 23-52 52Z" fill="#2B1D40"/>
+  </g>
+
+  <text x="640" y="684" text-anchor="middle" fill="#F8FAFC" font-size="28" font-family="Arial, Helvetica, sans-serif" opacity="0.88">
+    Hayes Dance Class " Coming Soon
+  </text>
+</svg>
