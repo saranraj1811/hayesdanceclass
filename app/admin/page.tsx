@@ -153,6 +153,12 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
             <button className="rounded-lg bg-fuchsia-600 px-4 py-2 font-semibold text-white hover:bg-fuchsia-700">
               Search
             </button>
+            <a
+              href={activeTab === "students" ? "/api/admin/export/students" : "/api/admin/export/instructors"}
+              className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-center font-semibold text-slate-800 hover:bg-slate-50"
+            >
+              {activeTab === "students" ? "Export Student CSV" : "Export Instructor CSV"}
+            </a>
           </form>
         </section>
 
