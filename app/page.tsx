@@ -301,47 +301,47 @@ export default function Home() {
               {
                 title: "Fun & Fitness",
                 description: "Enjoy dance while staying active, healthy and happy.",
-                image: "/images/dance-kids.svg",
-                alt: "Stylised young dancers in colourful movement",
+                image: "/images/why-fun-fitness.webp",
+                alt: "Young girl joyfully jumping in orange joggers and purple top",
               },
               {
                 title: "Learn & Grow",
                 description: "Improve coordination, confidence and self-expression.",
-                image: "/images/dance-adults.svg",
-                alt: "Adult dancers performing classical fusion",
+                image: "/images/why-learn-grow.webp",
+                alt: "Girl in wide dance stance with purple top and black joggers",
               },
               {
                 title: "Expert Guidance",
                 description: "Learn from experienced instructors in a friendly environment.",
-                image: "/images/bollywood-style.svg",
-                alt: "Bollywood style dancer with vibrant colours",
+                image: "/images/why-expert-guidance.webp",
+                alt: "Dance instructor in black pointing, teaching stance",
               },
               {
                 title: "Cultural Connection",
                 description: "Celebrate Bollywood & South Indian culture through dance.",
-                image: "/images/south-indian-style.svg",
-                alt: "South Indian inspired dance scene",
+                image: "/images/why-cultural-connection.webp",
+                alt: "South Indian classical dancer in purple and gold costume",
               },
               {
                 title: "For All Ages",
                 description: "Kids, teens and adults \u2013 everyone is welcome! All levels.",
-                image: "/images/dance-kids.svg",
-                alt: "Group of dancers of mixed ages",
+                image: "/images/why-all-ages.webp",
+                alt: "Girl in purple top dancing with arms open",
               },
             ].map((item) => (
               <article
                 key={item.title}
                 className="group overflow-hidden rounded-3xl border border-white/15 bg-white/[0.04] backdrop-blur-md transition hover:scale-[1.04] hover:border-fuchsia-300/60 hover:shadow-[0_0_25px_rgba(236,47,215,0.35)]"
               >
-                <div className="relative h-44">
+                <div className="relative h-52">
                   <Image
                     src={item.image}
                     alt={item.alt}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
-                    className="object-cover transition duration-500 group-hover:scale-110"
+                    className="object-cover object-top transition duration-500 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#160020]/95 via-[#160020]/35 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#160020]/90 via-[#160020]/20 to-transparent" />
                 </div>
                 <div className="space-y-2 p-5">
                   <h3 className="text-base font-semibold text-white">{item.title}</h3>
