@@ -104,7 +104,7 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
               name="q"
               defaultValue={query}
               placeholder="Search by name, phone, location"
-              className="w-full rounded-lg border border-slate-300 px-4 py-2 focus:border-slate-500 focus:outline-none"
+              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none"
             />
             <button className="rounded-lg bg-fuchsia-600 px-4 py-2 font-semibold text-white hover:bg-fuchsia-700">
               Search
@@ -117,7 +117,7 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
             <div className="border-b border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{loadError}</div>
           ) : null}
           <table className="min-w-full text-left text-sm">
-            <thead className="bg-slate-50 text-slate-700">
+            <thead className="bg-slate-50 text-slate-900">
               <tr>
                 <th className="px-4 py-3 font-semibold">Name</th>
                 <th className="px-4 py-3 font-semibold">Email</th>
@@ -132,29 +132,32 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
             </thead>
             <tbody>
               {enquiries.length === 0 ? (
-                <tr>
+                <tr className="border-t border-slate-200 bg-white">
                   <td colSpan={9} className="px-4 py-8 text-center text-slate-500">
                     No enquiries found.
                   </td>
                 </tr>
               ) : (
                 enquiries.map((enquiry) => (
-                  <tr key={enquiry.id} className="border-t border-slate-200 align-top">
-                    <td className="px-4 py-3">{enquiry.fullName}</td>
-                    <td className="px-4 py-3">{enquiry.email}</td>
-                    <td className="px-4 py-3">{enquiry.phone}</td>
-                    <td className="px-4 py-3">{enquiry.location}</td>
-                    <td className="px-4 py-3">{formatInterest(enquiry.interestedFor)}</td>
-                    <td className="px-4 py-3">{formatTime(enquiry.preferredTime)}</td>
+                  <tr
+                    key={enquiry.id}
+                    className="align-top border-t border-slate-200 bg-white text-slate-900 transition hover:bg-slate-50"
+                  >
+                    <td className="px-4 py-3 text-slate-900">{enquiry.fullName}</td>
+                    <td className="px-4 py-3 text-slate-600">{enquiry.email}</td>
+                    <td className="px-4 py-3 text-slate-900">{enquiry.phone}</td>
+                    <td className="px-4 py-3 text-slate-900">{enquiry.location}</td>
+                    <td className="px-4 py-3 text-slate-900">{formatInterest(enquiry.interestedFor)}</td>
+                    <td className="px-4 py-3 text-slate-900">{formatTime(enquiry.preferredTime)}</td>
                     <td className="max-w-xs px-4 py-3 text-slate-600">{enquiry.message || "-"}</td>
-                    <td className="whitespace-nowrap px-4 py-3">{enquiry.createdAt.toLocaleString()}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-slate-600">{enquiry.createdAt.toLocaleString()}</td>
                     <td className="px-4 py-3">
                       <form action={updateEnquiryStatus} className="flex items-center gap-2">
                         <input type="hidden" name="enquiryId" value={enquiry.id} />
                         <select
                           name="status"
                           defaultValue={enquiry.status}
-                          className="rounded-md border border-slate-300 px-2 py-1"
+                          className="rounded-md border border-slate-300 bg-white px-2 py-1 text-slate-900 focus:border-slate-500 focus:outline-none"
                         >
                           {Object.values(EnquiryStatus).map((status) => (
                             <option key={status} value={status}>

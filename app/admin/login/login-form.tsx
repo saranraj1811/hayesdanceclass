@@ -33,7 +33,7 @@ export function LoginForm() {
           name="password"
           type="password"
           required
-          className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-slate-500 focus:outline-none"
+          className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none"
         />
       </div>
 
