@@ -1,12 +1,12 @@
-import { EnquiryStatus, InterestedFor } from "@prisma/client";
+import { EnquiryStatus, InstructorEnquiryStatus, InstructorAvailability, InterestedFor } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
-import { logoutAction, updateEnquiryStatus } from "@/app/admin/actions";
+import { logoutAction, updateEnquiryStatus, updateInstructorEnquiryStatus } from "@/app/admin/actions";
 import { logServerError } from "@/lib/server-logging";
 
 type AdminPageProps = {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; tab?: string }>;
 };
 
 function formatInterest(value: InterestedFor): string {
@@ -30,8 +30,19 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
 
   const params = await searchParams;
   const query = params.q?.trim() ?? "";
+  const activeTab = params.tab === "instructors" ? "instructors" : "students";
 
-  const whereClause = query
+  const studentWhereClause = query
+    ? {
+        OR: [
+          { fullName: { contains: query, mode: "insensitive" as const } },
+          { phone: { contains: query, mode: "insensitive" as const } },
+          { location: { contains: query, mode: "insensitive" as const } },
+        ],
+      }
+    : {};
+
+  const instructorWhereClause = query
     ? {
         OR: [
           { fullName: { contains: query, mode: "insensitive" as const } },
@@ -42,30 +53,40 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
     : {};
 
   let enquiries: Awaited<ReturnType<typeof prisma.enquiry.findMany>> = [];
-  let totalEnquiries = 0;
-  let newEnquiries = 0;
+  let instructorEnquiries: Awaited<ReturnType<typeof prisma.instructorEnquiry.findMany>> = [];
+  let totalStudentEnquiries = 0;
+  let totalInstructorEnquiries = 0;
   let kidsInterest = 0;
   let adultsInterest = 0;
   let loadError = "";
 
   try {
-    [enquiries, totalEnquiries, newEnquiries, kidsInterest, adultsInterest] = await prisma.$transaction([
+    [enquiries, instructorEnquiries, totalStudentEnquiries, totalInstructorEnquiries, kidsInterest, adultsInterest] =
+      await prisma.$transaction([
       prisma.enquiry.findMany({
-        where: whereClause,
+        where: studentWhereClause,
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.instructorEnquiry.findMany({
+        where: instructorWhereClause,
         orderBy: { createdAt: "desc" },
       }),
       prisma.enquiry.count(),
-      prisma.enquiry.count({ where: { status: EnquiryStatus.NEW } }),
+      prisma.instructorEnquiry.count(),
       prisma.enquiry.count({
         where: { OR: [{ interestedFor: InterestedFor.KIDS }, { interestedFor: InterestedFor.BOTH }] },
       }),
       prisma.enquiry.count({
         where: { OR: [{ interestedFor: InterestedFor.ADULTS }, { interestedFor: InterestedFor.BOTH }] },
       }),
-    ]);
+      ]);
   } catch (error) {
     logServerError("admin/page data load", error);
     loadError = "Unable to load enquiries right now. Verify database connection and run prisma db push.";
+  }
+
+  function formatAvailability(value: InstructorAvailability): string {
+    return formatTime(value);
   }
 
   return (
@@ -85,8 +106,8 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
 
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { label: "Total enquiries", value: totalEnquiries },
-            { label: "New enquiries", value: newEnquiries },
+            { label: "Total student enquiries", value: totalStudentEnquiries },
+            { label: "Total instructor enquiries", value: totalInstructorEnquiries },
             { label: "Kids interest", value: kidsInterest },
             { label: "Adults interest", value: adultsInterest },
           ].map((card) => (
@@ -98,6 +119,28 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
         </section>
 
         <section className="rounded-2xl bg-white p-4 shadow-sm">
+          <div className="mb-4 grid gap-3 sm:grid-cols-2">
+            <a
+              href="/admin?tab=students"
+              className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${
+                activeTab === "students"
+                  ? "border-fuchsia-300 bg-fuchsia-50 text-fuchsia-800"
+                  : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+              }`}
+            >
+              Student Enquiries
+            </a>
+            <a
+              href="/admin?tab=instructors"
+              className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${
+                activeTab === "instructors"
+                  ? "border-fuchsia-300 bg-fuchsia-50 text-fuchsia-800"
+                  : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+              }`}
+            >
+              Instructor Enquiries
+            </a>
+          </div>
           <form className="flex flex-col gap-3 sm:flex-row">
             <input
               type="text"
@@ -106,6 +149,7 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
               placeholder="Search by name, phone, location"
               className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-900 placeholder:text-slate-400 focus:border-slate-500 focus:outline-none"
             />
+            <input type="hidden" name="tab" value={activeTab} />
             <button className="rounded-lg bg-fuchsia-600 px-4 py-2 font-semibold text-white hover:bg-fuchsia-700">
               Search
             </button>
@@ -116,65 +160,153 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
           {loadError ? (
             <div className="border-b border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{loadError}</div>
           ) : null}
-          <table className="min-w-full text-left text-sm">
-            <thead className="bg-slate-50 text-slate-900">
-              <tr>
-                <th className="px-4 py-3 font-semibold">Name</th>
-                <th className="px-4 py-3 font-semibold">Email</th>
-                <th className="px-4 py-3 font-semibold">Phone</th>
-                <th className="px-4 py-3 font-semibold">Location</th>
-                <th className="px-4 py-3 font-semibold">Interested For</th>
-                <th className="px-4 py-3 font-semibold">Preferred Time</th>
-                <th className="px-4 py-3 font-semibold">Message</th>
-                <th className="px-4 py-3 font-semibold">Submitted Date</th>
-                <th className="px-4 py-3 font-semibold">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {enquiries.length === 0 ? (
-                <tr className="border-t border-slate-200 bg-white">
-                  <td colSpan={9} className="px-4 py-8 text-center text-slate-500">
-                    No enquiries found.
-                  </td>
+          {activeTab === "students" ? (
+            <table className="min-w-full text-left text-sm">
+              <thead className="bg-slate-50 text-slate-900">
+                <tr>
+                  <th className="px-4 py-3 font-semibold">Name</th>
+                  <th className="px-4 py-3 font-semibold">Email</th>
+                  <th className="px-4 py-3 font-semibold">Phone</th>
+                  <th className="px-4 py-3 font-semibold">Location</th>
+                  <th className="px-4 py-3 font-semibold">Interested For</th>
+                  <th className="px-4 py-3 font-semibold">Preferred Time</th>
+                  <th className="px-4 py-3 font-semibold">Message</th>
+                  <th className="px-4 py-3 font-semibold">Submitted Date</th>
+                  <th className="px-4 py-3 font-semibold">Status</th>
                 </tr>
-              ) : (
-                enquiries.map((enquiry) => (
-                  <tr
-                    key={enquiry.id}
-                    className="align-top border-t border-slate-200 bg-white text-slate-900 transition hover:bg-slate-50"
-                  >
-                    <td className="px-4 py-3 text-slate-900">{enquiry.fullName}</td>
-                    <td className="px-4 py-3 text-slate-600">{enquiry.email}</td>
-                    <td className="px-4 py-3 text-slate-900">{enquiry.phone}</td>
-                    <td className="px-4 py-3 text-slate-900">{enquiry.location}</td>
-                    <td className="px-4 py-3 text-slate-900">{formatInterest(enquiry.interestedFor)}</td>
-                    <td className="px-4 py-3 text-slate-900">{formatTime(enquiry.preferredTime)}</td>
-                    <td className="max-w-xs px-4 py-3 text-slate-600">{enquiry.message || "-"}</td>
-                    <td className="whitespace-nowrap px-4 py-3 text-slate-600">{enquiry.createdAt.toLocaleString()}</td>
-                    <td className="px-4 py-3">
-                      <form action={updateEnquiryStatus} className="flex items-center gap-2">
-                        <input type="hidden" name="enquiryId" value={enquiry.id} />
-                        <select
-                          name="status"
-                          defaultValue={enquiry.status}
-                          className="rounded-md border border-slate-300 bg-white px-2 py-1 text-slate-900 focus:border-slate-500 focus:outline-none"
-                        >
-                          {Object.values(EnquiryStatus).map((status) => (
-                            <option key={status} value={status}>
-                              {status}
-                            </option>
-                          ))}
-                        </select>
-                        <button className="rounded-md bg-slate-800 px-3 py-1 text-xs font-semibold text-white hover:bg-slate-700">
-                          Update
-                        </button>
-                      </form>
+              </thead>
+              <tbody>
+                {enquiries.length === 0 ? (
+                  <tr className="border-t border-slate-200 bg-white">
+                    <td colSpan={9} className="px-4 py-8 text-center text-slate-500">
+                      No student enquiries found.
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  enquiries.map((enquiry) => (
+                    <tr
+                      key={enquiry.id}
+                      className="align-top border-t border-slate-200 bg-white text-slate-900 transition hover:bg-slate-50"
+                    >
+                      <td className="px-4 py-3 text-slate-900">{enquiry.fullName}</td>
+                      <td className="px-4 py-3 text-slate-600">{enquiry.email}</td>
+                      <td className="px-4 py-3 text-slate-900">{enquiry.phone}</td>
+                      <td className="px-4 py-3 text-slate-900">{enquiry.location}</td>
+                      <td className="px-4 py-3 text-slate-900">{formatInterest(enquiry.interestedFor)}</td>
+                      <td className="px-4 py-3 text-slate-900">{formatTime(enquiry.preferredTime)}</td>
+                      <td className="max-w-xs px-4 py-3 text-slate-600">{enquiry.message || "-"}</td>
+                      <td className="whitespace-nowrap px-4 py-3 text-slate-600">
+                        {enquiry.createdAt.toLocaleString()}
+                      </td>
+                      <td className="px-4 py-3">
+                        <form action={updateEnquiryStatus} className="flex items-center gap-2">
+                          <input type="hidden" name="enquiryId" value={enquiry.id} />
+                          <select
+                            name="status"
+                            defaultValue={enquiry.status}
+                            className="rounded-md border border-slate-300 bg-white px-2 py-1 text-slate-900 focus:border-slate-500 focus:outline-none"
+                          >
+                            {Object.values(EnquiryStatus).map((status) => (
+                              <option key={status} value={status}>
+                                {status}
+                              </option>
+                            ))}
+                          </select>
+                          <button className="rounded-md bg-slate-800 px-3 py-1 text-xs font-semibold text-white hover:bg-slate-700">
+                            Update
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          ) : (
+            <table className="min-w-full text-left text-sm">
+              <thead className="bg-slate-50 text-slate-900">
+                <tr>
+                  <th className="px-4 py-3 font-semibold">Name</th>
+                  <th className="px-4 py-3 font-semibold">Email</th>
+                  <th className="px-4 py-3 font-semibold">Phone</th>
+                  <th className="px-4 py-3 font-semibold">Location</th>
+                  <th className="px-4 py-3 font-semibold">Dance Styles</th>
+                  <th className="px-4 py-3 font-semibold">Availability</th>
+                  <th className="px-4 py-3 font-semibold">Links</th>
+                  <th className="px-4 py-3 font-semibold">Message</th>
+                  <th className="px-4 py-3 font-semibold">Submitted Date</th>
+                  <th className="px-4 py-3 font-semibold">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {instructorEnquiries.length === 0 ? (
+                  <tr className="border-t border-slate-200 bg-white">
+                    <td colSpan={10} className="px-4 py-8 text-center text-slate-500">
+                      No instructor enquiries found.
+                    </td>
+                  </tr>
+                ) : (
+                  instructorEnquiries.map((enquiry) => (
+                    <tr
+                      key={enquiry.id}
+                      className="align-top border-t border-slate-200 bg-white text-slate-900 transition hover:bg-slate-50"
+                    >
+                      <td className="px-4 py-3 text-slate-900">{enquiry.fullName}</td>
+                      <td className="px-4 py-3 text-slate-600">{enquiry.email}</td>
+                      <td className="px-4 py-3 text-slate-900">{enquiry.phone}</td>
+                      <td className="px-4 py-3 text-slate-900">{enquiry.location}</td>
+                      <td className="px-4 py-3 text-slate-900">{enquiry.danceStyles.join(", ")}</td>
+                      <td className="px-4 py-3 text-slate-900">{formatAvailability(enquiry.availability)}</td>
+                      <td className="px-4 py-3 text-slate-600">
+                        {[enquiry.instagramUrl, enquiry.youtubeUrl, enquiry.facebookUrl, enquiry.portfolioUrl]
+                          .filter(Boolean)
+                          .map((link) => (
+                            <a
+                              key={link}
+                              href={link ?? undefined}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="mr-2 inline-block text-xs text-fuchsia-700 underline"
+                            >
+                              Link
+                            </a>
+                          ))}
+                        {!enquiry.instagramUrl &&
+                        !enquiry.youtubeUrl &&
+                        !enquiry.facebookUrl &&
+                        !enquiry.portfolioUrl
+                          ? "-"
+                          : null}
+                      </td>
+                      <td className="max-w-xs px-4 py-3 text-slate-600">{enquiry.experienceMessage || "-"}</td>
+                      <td className="whitespace-nowrap px-4 py-3 text-slate-600">
+                        {enquiry.createdAt.toLocaleString()}
+                      </td>
+                      <td className="px-4 py-3">
+                        <form action={updateInstructorEnquiryStatus} className="flex items-center gap-2">
+                          <input type="hidden" name="enquiryId" value={enquiry.id} />
+                          <select
+                            name="status"
+                            defaultValue={enquiry.status}
+                            className="rounded-md border border-slate-300 bg-white px-2 py-1 text-slate-900 focus:border-slate-500 focus:outline-none"
+                          >
+                            {Object.values(InstructorEnquiryStatus).map((status) => (
+                              <option key={status} value={status}>
+                                {status}
+                              </option>
+                            ))}
+                          </select>
+                          <button className="rounded-md bg-slate-800 px-3 py-1 text-xs font-semibold text-white hover:bg-slate-700">
+                            Update
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
         </section>
       </div>
     </main>

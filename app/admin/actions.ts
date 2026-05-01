@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { EnquiryStatus } from "@prisma/client";
+import { EnquiryStatus, InstructorEnquiryStatus } from "@prisma/client";
 import { clearAdminSession, isAdminAuthenticated } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 import { logServerError } from "@/lib/server-logging";
@@ -31,6 +31,36 @@ export async function updateEnquiryStatus(formData: FormData) {
     });
   } catch (error) {
     logServerError("admin/updateEnquiryStatus", error);
+    return;
+  }
+
+  revalidatePath("/admin");
+}
+
+export async function updateInstructorEnquiryStatus(formData: FormData) {
+  const authed = await isAdminAuthenticated();
+  if (!authed) {
+    redirect("/admin/login");
+  }
+
+  const enquiryId = formData.get("enquiryId");
+  const status = formData.get("status");
+
+  if (typeof enquiryId !== "string" || typeof status !== "string") {
+    return;
+  }
+
+  if (!Object.values(InstructorEnquiryStatus).includes(status as InstructorEnquiryStatus)) {
+    return;
+  }
+
+  try {
+    await prisma.instructorEnquiry.update({
+      where: { id: enquiryId },
+      data: { status: status as InstructorEnquiryStatus },
+    });
+  } catch (error) {
+    logServerError("admin/updateInstructorEnquiryStatus", error);
     return;
   }
 
