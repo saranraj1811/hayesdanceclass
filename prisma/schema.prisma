@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum InterestedFor {
+  KIDS
+  ADULTS
+  BOTH
+}
+
+enum PreferredTime {
+  SATURDAY_MORNING
+  SATURDAY_AFTERNOON
+  SUNDAY
+  FLEXIBLE
+}
+
+enum EnquiryStatus {
+  NEW
+  CONTACTED
+  CONFIRMED
+  NOT_INTERESTED
+}
+
+model Enquiry {
+  id            String         @id @default(cuid())
+  fullName      String
+  email         String
+  phone         String
+  location      String
+  interestedFor InterestedFor
+  preferredTime PreferredTime
+  message       String?
+  status        EnquiryStatus  @default(NEW)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}

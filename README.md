@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Hayes Dance Class Enquiry Website
 
-## Getting Started
+Production-ready Next.js App Router landing page for a new dance class launch in Hayes & Harlington, including:
 
-First, run the development server:
+- Public animated homepage with enquiry capture
+- Prisma + PostgreSQL persistence
+- Password-protected admin dashboard with enquiry status updates
+
+## Tech Stack
+
+- Next.js (App Router) + TypeScript
+- Tailwind CSS
+- Prisma ORM
+- PostgreSQL (Neon/Vercel compatible)
+
+## Environment Variables
+
+Copy `.env.example` to `.env`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Set values:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+DATABASE_URL=
+ADMIN_PASSWORD=
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Local Development
 
-## Learn More
+Install and run:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install
+npx prisma generate
+npx prisma migrate dev --name init
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Production Deployment (Vercel)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Create a PostgreSQL database (Neon recommended).
+2. Add `DATABASE_URL` and `ADMIN_PASSWORD` to Vercel project environment variables.
+3. Add a build step that runs Prisma generate before build:
 
-## Deploy on Vercel
+```bash
+npx prisma generate && next build
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Run migrations against production database:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npx prisma migrate deploy
+```
+
+5. Deploy.
+
+## Main Routes
+
+- `/` public landing page + enquiry form
+- `/admin/login` admin login
+- `/admin` protected admin dashboard
