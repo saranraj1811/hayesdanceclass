@@ -39,6 +39,12 @@ npx prisma migrate dev --name init
 npm run dev
 ```
 
+If your database table is missing (for example in Neon), run:
+
+```bash
+npx prisma db push
+```
+
 ## Production Deployment (Vercel)
 
 1. Create a PostgreSQL database (Neon recommended).
@@ -53,6 +59,12 @@ npx prisma generate && next build
 
 ```bash
 npx prisma migrate deploy
+```
+
+If you are not using migrations yet and only need to create/update the `Enquiry` table quickly, run:
+
+```bash
+npx prisma db push
 ```
 
 5. Deploy.

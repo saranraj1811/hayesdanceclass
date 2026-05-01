@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 import { logoutAction, updateEnquiryStatus } from "@/app/admin/actions";
+import { logServerError } from "@/lib/server-logging";
 
 type AdminPageProps = {
   searchParams: Promise<{ q?: string }>;
@@ -40,20 +41,32 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
       }
     : {};
 
-  const [enquiries, totalEnquiries, newEnquiries, kidsInterest, adultsInterest] = await prisma.$transaction([
-    prisma.enquiry.findMany({
-      where: whereClause,
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.enquiry.count(),
-    prisma.enquiry.count({ where: { status: EnquiryStatus.NEW } }),
-    prisma.enquiry.count({
-      where: { OR: [{ interestedFor: InterestedFor.KIDS }, { interestedFor: InterestedFor.BOTH }] },
-    }),
-    prisma.enquiry.count({
-      where: { OR: [{ interestedFor: InterestedFor.ADULTS }, { interestedFor: InterestedFor.BOTH }] },
-    }),
-  ]);
+  let enquiries: Awaited<ReturnType<typeof prisma.enquiry.findMany>> = [];
+  let totalEnquiries = 0;
+  let newEnquiries = 0;
+  let kidsInterest = 0;
+  let adultsInterest = 0;
+  let loadError = "";
+
+  try {
+    [enquiries, totalEnquiries, newEnquiries, kidsInterest, adultsInterest] = await prisma.$transaction([
+      prisma.enquiry.findMany({
+        where: whereClause,
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.enquiry.count(),
+      prisma.enquiry.count({ where: { status: EnquiryStatus.NEW } }),
+      prisma.enquiry.count({
+        where: { OR: [{ interestedFor: InterestedFor.KIDS }, { interestedFor: InterestedFor.BOTH }] },
+      }),
+      prisma.enquiry.count({
+        where: { OR: [{ interestedFor: InterestedFor.ADULTS }, { interestedFor: InterestedFor.BOTH }] },
+      }),
+    ]);
+  } catch (error) {
+    logServerError("admin/page data load", error);
+    loadError = "Unable to load enquiries right now. Verify database connection and run prisma db push.";
+  }
 
   return (
     <main className="min-h-screen bg-slate-100 p-4 sm:p-8">
@@ -100,6 +113,9 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
         </section>
 
         <section className="overflow-x-auto rounded-2xl bg-white shadow-sm">
+          {loadError ? (
+            <div className="border-b border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{loadError}</div>
+          ) : null}
           <table className="min-w-full text-left text-sm">
             <thead className="bg-slate-50 text-slate-700">
               <tr>

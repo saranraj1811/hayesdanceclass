@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { isRateLimited } from "@/lib/rate-limit";
 import { enquirySchema } from "@/lib/validations";
+import { logServerError } from "@/lib/server-logging";
 
 function getClientIp(headers: Headers): string {
   const forwardedFor = headers.get("x-forwarded-for");
@@ -19,7 +21,10 @@ export async function POST(request: Request) {
 
     if (!parsed.success) {
       return NextResponse.json(
-        { error: parsed.error.issues[0]?.message ?? "Invalid form submission." },
+        {
+          success: false,
+          message: parsed.error.issues[0]?.message ?? "Invalid form submission.",
+        },
         { status: 400 },
       );
     }
@@ -27,13 +32,16 @@ export async function POST(request: Request) {
     const data = parsed.data;
 
     if (data.website) {
-      return NextResponse.json({ ok: true });
+      return NextResponse.json({ success: true, message: "Submitted successfully." });
     }
 
     const ip = getClientIp(request.headers);
     if (isRateLimited(ip)) {
       return NextResponse.json(
-        { error: "Too many attempts. Please try again in a few minutes." },
+        {
+          success: false,
+          message: "Too many attempts. Please try again in a few minutes.",
+        },
         { status: 429 },
       );
     }
@@ -50,10 +58,30 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({ ok: true });
-  } catch {
+    return NextResponse.json({
+      success: true,
+      message: "Thank you! We've received your interest and will contact you when classes are ready.",
+    });
+  } catch (error) {
+    logServerError("api/enquiries POST", error);
+
+    const isMissingTable =
+      error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2021";
+    if (isMissingTable) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Database is not ready yet. Please try again shortly.",
+        },
+        { status: 503 },
+      );
+    }
+
     return NextResponse.json(
-      { error: "We could not submit your interest right now. Please try again." },
+      {
+        success: false,
+        message: "We could not submit your interest right now. Please try again.",
+      },
       { status: 500 },
     );
   }

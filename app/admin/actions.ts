@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { EnquiryStatus } from "@prisma/client";
 import { clearAdminSession, isAdminAuthenticated } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
+import { logServerError } from "@/lib/server-logging";
 
 export async function updateEnquiryStatus(formData: FormData) {
   const authed = await isAdminAuthenticated();
@@ -23,15 +24,24 @@ export async function updateEnquiryStatus(formData: FormData) {
     return;
   }
 
-  await prisma.enquiry.update({
-    where: { id: enquiryId },
-    data: { status: status as EnquiryStatus },
-  });
+  try {
+    await prisma.enquiry.update({
+      where: { id: enquiryId },
+      data: { status: status as EnquiryStatus },
+    });
+  } catch (error) {
+    logServerError("admin/updateEnquiryStatus", error);
+    return;
+  }
 
   revalidatePath("/admin");
 }
 
 export async function logoutAction() {
-  await clearAdminSession();
+  try {
+    await clearAdminSession();
+  } catch (error) {
+    logServerError("admin/logoutAction", error);
+  }
   redirect("/admin/login");
 }

@@ -13,6 +13,11 @@ type FormState = {
   website: string;
 };
 
+type EnquiryApiResponse = {
+  success: boolean;
+  message: string;
+};
+
 const initialState: FormState = {
   fullName: "",
   email: "",
@@ -43,9 +48,9 @@ export function EnquiryForm() {
         body: JSON.stringify(form),
       });
 
-      const payload = (await response.json()) as { ok?: boolean; error?: string };
+      const payload = (await response.json()) as EnquiryApiResponse;
       if (!response.ok) {
-        setError(payload.error ?? "Unable to submit your details. Please try again.");
+        setError(payload.message ?? "Unable to submit your details. Please try again.");
         return;
       }
 
