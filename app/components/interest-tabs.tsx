@@ -10,12 +10,12 @@ export function InterestTabs() {
   const [activeTab, setActiveTab] = useState<InterestTab>("student");
 
   return (
-    <div className="space-y-4">
-      <div className="grid gap-3 sm:grid-cols-2">
+    <div className="w-full space-y-4">
+      <div className="grid w-full gap-3 sm:grid-cols-2">
         <button
           type="button"
           onClick={() => setActiveTab("student")}
-          className={`rounded-2xl border px-4 py-3 text-left transition ${
+          className={`w-full rounded-2xl border px-4 py-3 text-left transition ${
             activeTab === "student"
               ? "border-fuchsia-300 bg-fuchsia-500/20 shadow-[0_0_20px_rgba(217,70,239,0.35)]"
               : "border-white/20 bg-white/5 hover:bg-white/10"
@@ -27,7 +27,7 @@ export function InterestTabs() {
         <button
           type="button"
           onClick={() => setActiveTab("instructor")}
-          className={`rounded-2xl border px-4 py-3 text-left transition ${
+          className={`w-full rounded-2xl border px-4 py-3 text-left transition ${
             activeTab === "instructor"
               ? "border-amber-300 bg-amber-500/20 shadow-[0_0_20px_rgba(245,158,11,0.35)]"
               : "border-white/20 bg-white/5 hover:bg-white/10"

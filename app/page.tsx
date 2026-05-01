@@ -7,40 +7,41 @@ export default function Home() {
   const buildMarker = (process.env.VERCEL_GIT_COMMIT_SHA ?? "local-build").slice(0, 7);
 
   return (
-    <main className="relative isolate bg-slate-950 text-white">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(236,72,153,0.35),_transparent_60%),radial-gradient(circle_at_bottom,_rgba(249,115,22,0.25),_transparent_45%),linear-gradient(120deg,#0f172a_10%,#3b0764_45%,#1e293b_100%)]" />
-      <div className="pointer-events-none absolute inset-0 opacity-40 [background:radial-gradient(circle_at_15%_20%,#fde047_0,_transparent_20%),radial-gradient(circle_at_85%_30%,#38bdf8_0,_transparent_18%),radial-gradient(circle_at_55%_85%,#f472b6_0,_transparent_22%)]" />
+    <main className="relative w-full min-h-screen overflow-x-hidden bg-slate-950 text-white">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(236,72,153,0.35),_transparent_60%),radial-gradient(circle_at_bottom,_rgba(249,115,22,0.25),_transparent_45%),linear-gradient(120deg,#0f172a_10%,#3b0764_45%,#1e293b_100%)]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 opacity-40 [background:radial-gradient(circle_at_15%_20%,#fde047_0,_transparent_20%),radial-gradient(circle_at_85%_30%,#38bdf8_0,_transparent_18%),radial-gradient(circle_at_55%_85%,#f472b6_0,_transparent_22%)]" />
 
-      <div className="absolute inset-0">
-        <div className="floaty absolute left-[8%] top-[12%] text-fuchsia-200/80">
+      <div className="pointer-events-none absolute inset-0 -z-10 hidden md:block">
+        <div className="floaty absolute left-[8%] top-[12%] text-fuchsia-200/60">
           <Sparkles size={30} />
         </div>
-        <div className="floaty-delayed absolute right-[10%] top-[20%] text-orange-200/80">
+        <div className="floaty-delayed absolute right-[10%] top-[20%] text-orange-200/60">
           <MicVocal size={34} />
         </div>
-        <div className="floaty absolute bottom-[22%] left-[15%] text-cyan-100/80">
+        <div className="floaty absolute bottom-[22%] left-[15%] text-cyan-100/60">
           <Star size={26} />
         </div>
-        <div className="floaty-delayed absolute bottom-[18%] right-[14%] text-pink-200/80">
+        <div className="floaty-delayed absolute bottom-[18%] right-[14%] text-pink-200/60">
           <Sparkles size={32} />
         </div>
       </div>
 
-      <section className="mx-auto max-w-6xl px-4 pb-16 pt-20 sm:px-6 lg:px-8">
+      <div className="relative z-10">
+      <section className="mx-auto w-full max-w-6xl px-4 pb-14 pt-16 sm:px-6 lg:px-8">
         <div className="grid items-center gap-8 rounded-3xl border border-white/15 bg-white/5 px-6 py-10 shadow-2xl backdrop-blur-md sm:px-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-pink-100">
               <Sparkles size={14} /> Hayes & Harlington
             </p>
-            <h1 className="mt-5 max-w-3xl text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
+            <h1 className="mt-5 max-w-3xl text-4xl font-black leading-tight md:text-6xl">
               Bollywood & South Indian Dance Classes Coming Soon to Hayes
             </h1>
-            <p className="mt-5 max-w-2xl text-base text-slate-100 sm:text-lg">
+            <p className="mt-5 max-w-2xl text-base text-slate-100 md:text-lg">
               Register your interest for weekly dance sessions for kids and adults in Hayes & Harlington.
             </p>
             <a
               href="#register"
-              className="mt-8 inline-flex rounded-full bg-gradient-to-r from-fuchsia-500 via-pink-500 to-orange-500 px-8 py-3 text-sm font-bold uppercase tracking-wide shadow-[0_0_35px_rgba(236,72,153,0.6)] transition hover:scale-105 hover:shadow-[0_0_40px_rgba(249,115,22,0.85)]"
+              className="mt-8 inline-flex rounded-full bg-gradient-to-r from-fuchsia-500 via-pink-500 to-orange-500 px-7 py-3 text-sm font-bold uppercase tracking-wide shadow-[0_0_35px_rgba(236,72,153,0.6)] transition hover:scale-105 hover:shadow-[0_0_40px_rgba(249,115,22,0.85)]"
             >
               Register Interest
             </a>
@@ -49,8 +50,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="register" className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-16 pt-2 sm:px-6 lg:px-8">
-        <div className="rounded-3xl border border-white/20 bg-slate-900/60 p-4 shadow-2xl sm:p-8">
+      <section id="register" className="mx-auto w-full max-w-6xl scroll-mt-20 px-4 pb-14 pt-2 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-5xl rounded-3xl border border-white/20 bg-slate-900/60 p-4 shadow-2xl sm:p-8">
           <h2 className="mb-2 text-2xl font-bold">Register Your Interest</h2>
           <p className="text-slate-200">
             Join the early list as a student/parent or register your profile as an instructor.
@@ -63,7 +64,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-6xl px-4 pb-12 sm:px-6 lg:px-8">
         <div className="rounded-3xl border border-emerald-200/25 bg-emerald-500/10 p-6 backdrop-blur-md">
           <h2 className="text-2xl font-bold text-white">Proposed Class Location</h2>
           <p className="mt-3 text-slate-100">
@@ -89,7 +90,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         <h2 className="mb-5 text-2xl font-bold">Why Join</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
@@ -186,6 +187,7 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      </div>
     </main>
   );
 }
