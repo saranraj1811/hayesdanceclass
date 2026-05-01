@@ -4,8 +4,10 @@ import { HeroDanceVideo } from "@/app/components/hero-dance-video";
 import { InterestTabs } from "@/app/components/interest-tabs";
 
 export default function Home() {
+  const buildMarker = (process.env.VERCEL_GIT_COMMIT_SHA ?? "local-build").slice(0, 7);
+
   return (
-    <main className="relative isolate overflow-hidden bg-slate-950 text-white">
+    <main className="relative isolate bg-slate-950 text-white">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(236,72,153,0.35),_transparent_60%),radial-gradient(circle_at_bottom,_rgba(249,115,22,0.25),_transparent_45%),linear-gradient(120deg,#0f172a_10%,#3b0764_45%,#1e293b_100%)]" />
       <div className="pointer-events-none absolute inset-0 opacity-40 [background:radial-gradient(circle_at_15%_20%,#fde047_0,_transparent_20%),radial-gradient(circle_at_85%_30%,#38bdf8_0,_transparent_18%),radial-gradient(circle_at_55%_85%,#f472b6_0,_transparent_22%)]" />
 
@@ -44,6 +46,46 @@ export default function Home() {
             </a>
           </div>
           <HeroDanceVideo />
+        </div>
+      </section>
+
+      <section id="register" className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-16 pt-2 sm:px-6 lg:px-8">
+        <div className="rounded-3xl border border-white/20 bg-slate-900/60 p-4 shadow-2xl sm:p-8">
+          <h2 className="mb-2 text-2xl font-bold">Register Your Interest</h2>
+          <p className="text-slate-200">
+            Join the early list as a student/parent or register your profile as an instructor.
+          </p>
+          <p className="mb-3 mt-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm text-slate-100">
+            Choose a pathway below to register as a family/student or as an instructor.
+          </p>
+          <p className="mb-6 text-xs text-slate-300">Tabs are fully interactive and switch forms instantly.</p>
+          <InterestTabs />
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6 lg:px-8">
+        <div className="rounded-3xl border border-emerald-200/25 bg-emerald-500/10 p-6 backdrop-blur-md">
+          <h2 className="text-2xl font-bold text-white">Proposed Class Location</h2>
+          <p className="mt-3 text-slate-100">
+            We are planning sessions around Harlington School, Pinkwell Road, Hayes.
+          </p>
+          <p className="mt-2 text-sm text-slate-200">
+            Final venue and timing will be confirmed before classes begin.
+          </p>
+          <div className="mt-5 rounded-2xl border border-white/20 bg-slate-900/45 p-4">
+            <p className="inline-flex items-center gap-2 text-sm font-semibold text-white">
+              <MapPin size={16} />
+              Harlington School, Pinkwell Road, Hayes
+            </p>
+            <a
+              href="https://maps.app.goo.gl/UBwWpoD9gFScy7kT7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex rounded-full bg-gradient-to-r from-emerald-500 to-cyan-400 px-5 py-2 text-sm font-semibold text-slate-950 transition hover:brightness-110"
+            >
+              Open in Google Maps
+            </a>
+          </div>
         </div>
       </section>
 
@@ -99,67 +141,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="grid gap-6 rounded-3xl border border-orange-200/30 bg-orange-100/10 p-7 backdrop-blur-md lg:grid-cols-[1fr_0.8fr]">
-          <div>
-            <h2 className="text-2xl font-bold">Coming Soon - Early Access</h2>
-            <p className="mt-3 max-w-3xl text-slate-100">
-              We are planning a brand-new local dance class community in Hayes & Harlington. Your enquiry helps us shape
-              class timings, age groups, and style mix for launch.
-            </p>
-          </div>
-          <div className="relative h-48 overflow-hidden rounded-2xl border border-orange-100/30">
-            <Image
-              src="/images/dance-adults.svg"
-              alt="Stage lighting and dancer silhouettes in warm gold and pink tones"
-              fill
-              sizes="(max-width: 1024px) 100vw, 35vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-tr from-fuchsia-900/40 via-transparent to-amber-300/20" />
-          </div>
-        </div>
-      </section>
-
-      <section id="register" className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-16 pt-2 sm:px-6 lg:px-8">
-        <div className="rounded-3xl border border-white/20 bg-slate-900/60 p-4 shadow-2xl sm:p-8">
-          <h2 className="mb-2 text-2xl font-bold">Register Your Interest</h2>
-          <p className="text-slate-200">
-            Join the early list as a student/parent or register your profile as an instructor.
-          </p>
-          <p className="mb-6 mt-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm text-slate-100">
-            📍 Proposed Location: Harlington School, Pinkwell Road, Hayes (tentative)
-          </p>
-          <InterestTabs />
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6 lg:px-8">
-        <div className="rounded-3xl border border-emerald-200/25 bg-emerald-500/10 p-6 backdrop-blur-md">
-          <h2 className="text-2xl font-bold text-white">Proposed Class Location</h2>
-          <p className="mt-3 text-slate-100">
-            We are planning sessions around Harlington School, Pinkwell Road, Hayes.
-          </p>
-          <p className="mt-2 text-sm text-slate-200">
-            Final venue and timing will be confirmed before classes begin.
-          </p>
-          <div className="mt-5 rounded-2xl border border-white/20 bg-slate-900/45 p-4">
-            <p className="inline-flex items-center gap-2 text-sm font-semibold text-white">
-              <MapPin size={16} />
-              Harlington School, Pinkwell Road, Hayes
-            </p>
-            <a
-              href="https://maps.app.goo.gl/UBwWpoD9gFScy7kT7"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-flex rounded-full bg-gradient-to-r from-emerald-500 to-cyan-400 px-5 py-2 text-sm font-semibold text-slate-950 transition hover:brightness-110"
-            >
-              Open in Google Maps
-            </a>
-          </div>
-        </div>
-      </section>
-
       <footer className="border-t border-white/10 bg-slate-950/80">
         <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -199,7 +180,10 @@ export default function Home() {
               </article>
             ))}
           </div>
-          <p className="mt-6 text-center text-xs text-slate-400">© 2026 Hayes Dance Class. All rights reserved.</p>
+          <div className="mt-6 space-y-1 text-center">
+            <p className="text-xs text-slate-500">Last updated build: {buildMarker}</p>
+            <p className="text-xs text-slate-400">© 2026 Hayes Dance Class. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </main>
