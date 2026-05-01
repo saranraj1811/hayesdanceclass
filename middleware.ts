@@ -1,4 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { ADMIN_LOGIN_PATH, ADMIN_PANEL_BASE_PATH } from "@/lib/admin-routes";
+
 const ADMIN_COOKIE_NAME = "admin_session";
 
 async function sha256(input: string): Promise<string> {
@@ -22,27 +24,48 @@ function tokenMatches(token: string | undefined, expected: string | null): boole
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isLoginRoute = pathname === "/admin/login";
-  const isAdminRoute = pathname.startsWith("/admin");
 
-  if (!isAdminRoute) {
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  const isControlPanel = pathname === ADMIN_PANEL_BASE_PATH || pathname.startsWith(`${ADMIN_PANEL_BASE_PATH}/`);
+  const isApiAdmin = pathname === "/api/admin" || pathname.startsWith("/api/admin/");
+
+  if (!isControlPanel && !isApiAdmin) {
     return NextResponse.next();
   }
 
   const token = request.cookies.get(ADMIN_COOKIE_NAME)?.value;
   const isAuthenticated = tokenMatches(token, await expectedToken());
 
+  if (isApiAdmin) {
+    if (!isAuthenticated) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+    return NextResponse.next();
+  }
+
+  const isLoginRoute = pathname === ADMIN_LOGIN_PATH;
+
   if (isLoginRoute && isAuthenticated) {
-    return NextResponse.redirect(new URL("/admin", request.url));
+    return NextResponse.redirect(new URL(ADMIN_PANEL_BASE_PATH, request.url));
   }
 
   if (!isLoginRoute && !isAuthenticated) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+    return NextResponse.redirect(new URL(ADMIN_LOGIN_PATH, request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: [
+    "/admin",
+    "/admin/:path*",
+    "/control-panel-hdc",
+    "/control-panel-hdc/:path*",
+    "/api/admin",
+    "/api/admin/:path*",
+  ],
 };

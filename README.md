@@ -72,5 +72,4 @@ npx prisma db push
 ## Main Routes
 
 - `/` public landing page + enquiry form
-- `/admin/login` admin login
-- `/admin` protected admin dashboard
+- Operator enquiry dashboard and login use a private path defined in `lib/admin-routes.ts` (not linked from the public site). The legacy `/admin` URLs redirect to the home page.

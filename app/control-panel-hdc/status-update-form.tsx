@@ -3,7 +3,7 @@
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useFormStatus } from "react-dom";
-import { type UpdateStatusState } from "@/app/admin/actions";
+import { type UpdateStatusState } from "@/app/control-panel-hdc/actions";
 
 type StatusUpdateFormProps = {
   action: (state: UpdateStatusState, formData: FormData) => Promise<UpdateStatusState>;

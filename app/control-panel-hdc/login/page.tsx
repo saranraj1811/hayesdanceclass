@@ -1,5 +1,5 @@
 import { Music2 } from "lucide-react";
-import { LoginForm } from "@/app/admin/login/login-form";
+import { LoginForm } from "@/app/control-panel-hdc/login/login-form";
 
 export default function AdminLoginPage() {
   return (

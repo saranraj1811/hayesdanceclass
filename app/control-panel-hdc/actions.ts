@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { EnquiryStatus, InstructorEnquiryStatus } from "@prisma/client";
+import { ADMIN_LOGIN_PATH, ADMIN_PANEL_BASE_PATH } from "@/lib/admin-routes";
 import { clearAdminSession, isAdminAuthenticated } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 import { logServerError } from "@/lib/server-logging";
@@ -42,7 +43,7 @@ export async function updateEnquiryStatus(
     return { ok: false, message: "Failed to update student enquiry status." };
   }
 
-  revalidatePath("/admin");
+  revalidatePath(ADMIN_PANEL_BASE_PATH);
   return { ok: true, message: "Student enquiry status updated." };
 }
 
@@ -76,7 +77,7 @@ export async function updateInstructorEnquiryStatus(
     return { ok: false, message: "Failed to update instructor enquiry status." };
   }
 
-  revalidatePath("/admin");
+  revalidatePath(ADMIN_PANEL_BASE_PATH);
   return { ok: true, message: "Instructor enquiry status updated." };
 }
 
@@ -86,5 +87,5 @@ export async function logoutAction() {
   } catch (error) {
     logServerError("admin/logoutAction", error);
   }
-  redirect("/admin/login");
+  redirect(ADMIN_LOGIN_PATH);
 }

@@ -2,8 +2,9 @@ import { EnquiryStatus, InstructorEnquiryStatus, InstructorAvailability, Interes
 import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
-import { logoutAction, updateEnquiryStatus, updateInstructorEnquiryStatus } from "@/app/admin/actions";
-import { StatusUpdateForm } from "@/app/admin/status-update-form";
+import { ADMIN_LOGIN_PATH, ADMIN_PANEL_BASE_PATH } from "@/lib/admin-routes";
+import { logoutAction, updateEnquiryStatus, updateInstructorEnquiryStatus } from "@/app/control-panel-hdc/actions";
+import { StatusUpdateForm } from "@/app/control-panel-hdc/status-update-form";
 import { logServerError } from "@/lib/server-logging";
 
 type AdminPageProps = {
@@ -35,7 +36,7 @@ function statusPillClass(status: string): string {
 export default async function AdminDashboard({ searchParams }: AdminPageProps) {
   const authenticated = await isAdminAuthenticated();
   if (!authenticated) {
-    redirect("/admin/login");
+    redirect(ADMIN_LOGIN_PATH);
   }
 
   const params = await searchParams;
@@ -135,7 +136,7 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
     if (status !== "ALL") {
       url.set("status", status);
     }
-    return `/admin?${url.toString()}`;
+    return `${ADMIN_PANEL_BASE_PATH}?${url.toString()}`;
   }
 
   const statusFilterOptions =
@@ -180,7 +181,7 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
         <section className="rounded-2xl bg-white p-4 shadow-sm">
           <div className="mb-4 grid gap-3 sm:grid-cols-2">
             <a
-              href="/admin?tab=students"
+              href={`${ADMIN_PANEL_BASE_PATH}?tab=students`}
               className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${
                 activeTab === "students"
                   ? "border-fuchsia-300 bg-fuchsia-50 text-fuchsia-800"
@@ -190,7 +191,7 @@ export default async function AdminDashboard({ searchParams }: AdminPageProps) {
               Student Enquiries
             </a>
             <a
-              href="/admin?tab=instructors"
+              href={`${ADMIN_PANEL_BASE_PATH}?tab=instructors`}
               className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${
                 activeTab === "instructors"
                   ? "border-fuchsia-300 bg-fuchsia-50 text-fuchsia-800"
