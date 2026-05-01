@@ -10,9 +10,13 @@ type InterestTab = "student" | "instructor";
 
 export function InterestTabs() {
   const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState<InterestTab>(() =>
-    searchParams.get("tab") === "instructor" ? "instructor" : "student",
-  );
+  const initialTab: InterestTab = searchParams.get("tab") === "instructor" ? "instructor" : "student";
+
+  return <InterestTabsInner key={initialTab} initialTab={initialTab} />;
+}
+
+function InterestTabsInner({ initialTab }: { initialTab: InterestTab }) {
+  const [activeTab, setActiveTab] = useState<InterestTab>(initialTab);
 
   return (
     <div className="w-full space-y-5">

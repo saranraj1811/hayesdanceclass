@@ -142,18 +142,18 @@ export default function Home() {
                 Weekly Bollywood and South Indian dance classes for kids and adults in Hayes & Harlington, West London.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <a
-                  href="#register"
+                <Link
+                  href="/?tab=student#register"
                   className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-fuchsia-500 via-pink-500 to-orange-400 px-7 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-[0_0_30px_rgba(236,72,153,0.55)] transition hover:scale-105 hover:shadow-[0_0_40px_rgba(255,122,24,0.75)]"
                 >
                   <Users size={16} /> Join as Student / Parent
-                </a>
-                <a
-                  href="#register?tab=instructor"
+                </Link>
+                <Link
+                  href="/?tab=instructor#register"
                   className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/5 px-7 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:border-fuchsia-300/70 hover:bg-white/10"
                 >
                   <MicVocal size={16} /> Apply as Instructor
-                </a>
+                </Link>
               </div>
             </div>
 
