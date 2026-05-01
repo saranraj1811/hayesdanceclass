@@ -77,9 +77,30 @@ import { HeroDanceImage } from "@/app/components/hero-dance-video";
 import { InterestTabs } from "@/app/components/interest-tabs";
 import { SiteHeader } from "@/app/components/site-header";
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "DanceSchool",
+  name: "Hayes Dance Class",
+  url: "https://hayesdanceclass.co.uk",
+  description:
+    "Bollywood and South Indian dance classes for kids and adults in Hayes & Harlington, West London.",
+  areaServed: ["Hayes", "Harlington", "West London"],
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Hayes",
+    addressRegion: "London",
+    postalCode: "UB3",
+    addressCountry: "GB",
+  },
+};
+
 export default function Home() {
   return (
     <main className="relative w-full min-h-screen overflow-x-hidden bg-[#160020] text-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(236,72,153,0.32),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(255,122,24,0.18),_transparent_50%),linear-gradient(140deg,#1a0027_5%,#3b0764_40%,#1a0030_75%,#2c003e_100%)]" />
       <div className="pointer-events-none absolute inset-0 -z-10 opacity-50 [background:radial-gradient(circle_at_18%_22%,rgba(217,70,239,0.55)_0,_transparent_22%),radial-gradient(circle_at_82%_28%,rgba(255,122,24,0.45)_0,_transparent_20%),radial-gradient(circle_at_55%_85%,rgba(244,114,182,0.35)_0,_transparent_24%)]" />
 
@@ -111,19 +132,14 @@ export default function Home() {
               <p className="inline-flex items-center gap-2 rounded-full border border-fuchsia-300/40 bg-fuchsia-500/15 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-pink-100">
                 <MapPin size={13} /> Hayes & Harlington
               </p>
-              <h1 className="mt-5 text-4xl font-black leading-[1.05] md:text-6xl">
-                <span className="block text-white">Bollywood &</span>
-                <span className="block text-white">South Indian</span>
-                <span className="block bg-gradient-to-r from-amber-300 via-orange-300 to-amber-200 bg-clip-text text-transparent">
-                  Dance Classes
-                </span>
-                <span className="block text-white">Coming Soon to Hayes</span>
+              <h1 className="mt-5 text-4xl font-black leading-[1.05] text-white md:text-6xl">
+                Bollywood & South Indian Dance Classes in Hayes
               </h1>
               <p className="mt-5 text-base font-semibold text-fuchsia-200 md:text-lg">
                 Fun. Fitness. Culture. Confidence.
               </p>
               <p className="mt-3 max-w-xl text-base text-slate-200 md:text-lg">
-                Register your interest for weekly dance sessions for kids and adults in Hayes & Harlington.
+                Weekly Bollywood and South Indian dance classes for kids and adults in Hayes & Harlington, West London.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a
@@ -154,10 +170,10 @@ export default function Home() {
         >
           <div className="rounded-3xl border border-white/15 bg-white/[0.04] p-5 shadow-2xl backdrop-blur-md sm:p-8">
             <div className="mb-6 max-w-3xl">
-              <h2 className="text-2xl font-bold text-white sm:text-3xl">Register Your Interest</h2>
+              <h2 className="text-2xl font-bold text-white sm:text-3xl">Dance Classes for Kids & Adults in Hayes</h2>
               <p className="mt-2 text-sm text-slate-200">
-                Join the early list as a student/parent or register your profile as an instructor. Tabs are fully
-                interactive and switch forms instantly.
+                Register your interest for Hayes and Harlington sessions, or apply as an instructor for upcoming West
+                London classes.
               </p>
             </div>
             <Suspense fallback={null}>
@@ -172,11 +188,14 @@ export default function Home() {
           className="mx-auto w-full max-w-7xl scroll-mt-20 px-4 pb-16 sm:px-6 lg:px-8"
         >
           <div className="rounded-3xl border border-white/15 bg-white/[0.04] p-5 backdrop-blur-md sm:p-8">
+            <h2 className="mb-5 text-2xl font-bold text-white sm:text-3xl">
+              Dance Class Location in Hayes & Harlington
+            </h2>
             <div className="grid gap-6 lg:grid-cols-3">
               <div className="group relative overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br from-fuchsia-500/15 via-purple-500/10 to-orange-500/10 p-6 transition hover:scale-[1.02] hover:border-fuchsia-300/60 hover:shadow-[0_0_30px_rgba(236,72,153,0.35)]">
                 <div className="flex items-center gap-2 text-fuchsia-300">
                   <MapPin size={22} />
-                  <span className="text-sm font-semibold uppercase tracking-wide">Proposed Class Location</span>
+                  <span className="text-sm font-semibold uppercase tracking-wide">Proposed Venue</span>
                 </div>
                 <h3 className="mt-4 text-2xl font-bold text-white">Harlington School</h3>
                 <p className="mt-1 text-sm text-slate-200">Pinkwell Road, Hayes, UB3 1PB</p>
@@ -199,7 +218,7 @@ export default function Home() {
               <article className="group relative h-72 overflow-hidden rounded-3xl border border-white/15 transition hover:scale-[1.02] hover:border-fuchsia-300/60 hover:shadow-[0_0_30px_rgba(236,72,153,0.35)] lg:h-auto">
                 <Image
                   src="/images/studio-main.webp"
-                  alt="Proposed dance studio with full mirror wall"
+                  alt="Dance class studio space in Hayes with full mirror wall"
                   fill
                   sizes="(max-width: 1024px) 100vw, 33vw"
                   className="object-cover transition duration-500 group-hover:scale-105"
@@ -214,7 +233,7 @@ export default function Home() {
               <article className="group relative h-72 overflow-hidden rounded-3xl border border-white/15 transition hover:scale-[1.02] hover:border-fuchsia-300/60 hover:shadow-[0_0_30px_rgba(236,72,153,0.35)] lg:h-auto">
                 <Image
                   src="/images/studio-inside.webp"
-                  alt="Inside view of the proposed dance studio"
+                  alt="Indoor dance class training space in Hayes, West London"
                   fill
                   sizes="(max-width: 1024px) 100vw, 33vw"
                   className="object-cover transition duration-500 group-hover:scale-105"
@@ -289,44 +308,48 @@ export default function Home() {
         >
           <div className="mx-auto mb-8 max-w-3xl text-center">
             <h2 className="inline-flex items-center justify-center gap-2 text-2xl font-bold text-white sm:text-3xl">
-              <Sparkles className="text-fuchsia-300" size={22} /> Why Join Our Classes?
+              <Sparkles className="text-fuchsia-300" size={22} /> Why Join Our Dance Classes in Hayes
             </h2>
             <p className="mt-3 text-sm text-slate-200">
-              A welcoming community to learn, grow, and celebrate dance.
+              A welcoming community in Hayes & Harlington where families across West London can learn, grow and
+              celebrate dance.
             </p>
           </div>
 
+          <h2 className="mb-4 text-center text-xl font-bold text-white sm:text-2xl">
+            Dance Styles We Offer in West London
+          </h2>
           <div id="styles" className="grid scroll-mt-20 gap-5 sm:grid-cols-2 lg:grid-cols-5">
             {[
               {
                 title: "Fun & Fitness",
                 description: "Enjoy dance while staying active, healthy and happy.",
                 image: "/images/why-fun-fitness.webp",
-                alt: "Young girl joyfully jumping in orange joggers and purple top",
+                alt: "Kids Bollywood dance class in Hayes",
               },
               {
                 title: "Learn & Grow",
                 description: "Improve coordination, confidence and self-expression.",
                 image: "/images/why-learn-grow.webp",
-                alt: "Girl in wide dance stance with purple top and black joggers",
+                alt: "Kids and teens dance confidence training in Harlington",
               },
               {
                 title: "Expert Guidance",
                 description: "Learn from experienced instructors in a friendly environment.",
                 image: "/images/why-expert-guidance.webp",
-                alt: "Dance instructor in black pointing, teaching stance",
+                alt: "Dance instructor teaching in Hayes",
               },
               {
                 title: "Cultural Connection",
                 description: "Celebrate Bollywood & South Indian culture through dance.",
                 image: "/images/why-cultural-connection.webp",
-                alt: "South Indian classical dancer in purple and gold costume",
+                alt: "South Indian dance class in West London",
               },
               {
                 title: "For All Ages",
                 description: "Kids, teens and adults \u2013 everyone is welcome! All levels.",
                 image: "/images/why-all-ages.webp",
-                alt: "Girl in purple top dancing with arms open",
+                alt: "Dance classes for all ages in Hayes and Harlington",
               },
             ].map((item) => (
               <article

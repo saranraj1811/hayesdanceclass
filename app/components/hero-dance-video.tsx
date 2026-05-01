@@ -5,7 +5,7 @@ export function HeroDanceImage() {
     <div className="relative aspect-[16/10] w-full overflow-hidden rounded-3xl border border-white/20 bg-[#1d0030] shadow-[0_30px_80px_rgba(217,70,239,0.3)]">
       <Image
         src="/images/hero-dance-comic.webp"
-        alt="Bollywood and South Indian comic-style dancers on a neon lit stage"
+        alt="Kids and adults Bollywood dance class performance in Hayes, West London"
         fill
         sizes="(max-width: 1024px) 100vw, 55vw"
         className="object-cover object-center"
