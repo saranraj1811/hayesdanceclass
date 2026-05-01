@@ -407,7 +407,7 @@ export default function Home() {
               {
                 title: "Contact / Data Removal",
                 icon: Mail,
-                text: "To update or remove your enquiry details, please contact us using the contact details provided on this website.",
+                text: "To update or remove your enquiry details, please email Contact@hayesdanceclass.co.uk.",
               },
             ].map((item) => (
               <article
@@ -436,6 +436,12 @@ export default function Home() {
               <p className="mt-3 text-xs leading-6 text-slate-300">
                 Bringing dance, culture and confidence to Hayes &amp; Harlington.
               </p>
+              <a
+                href="mailto:Contact@hayesdanceclass.co.uk"
+                className="mt-2 inline-block text-xs text-fuchsia-200 underline decoration-dotted underline-offset-4 transition hover:text-white"
+              >
+                Contact@hayesdanceclass.co.uk
+              </a>
             </div>
 
             <div>
