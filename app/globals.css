@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #020617;
+  --background: #160020;
   --foreground: #f8fafc;
 }
 
@@ -10,13 +10,6 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
@@ -47,6 +40,10 @@ html {
   animation: shimmer 10s ease-in-out infinite alternate;
 }
 
+.neon-glow {
+  animation: neon-glow 3.5s ease-in-out infinite;
+}
+
 @keyframes floaty {
   0%,
   100% {
@@ -68,6 +65,16 @@ html {
   }
 }
 
+@keyframes neon-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(236, 47, 215, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(236, 47, 215, 0.7), 0 0 40px rgba(255, 122, 24, 0.3);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -75,7 +82,8 @@ html {
 
   .floaty,
   .floaty-delayed,
-  .hero-shimmer {
+  .hero-shimmer,
+  .neon-glow {
     animation: none !important;
   }
 }

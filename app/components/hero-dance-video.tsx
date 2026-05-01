@@ -1,65 +1,44 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Image from "next/image";
 
-const MOBILE_QUERY = "(max-width: 1024px)";
-const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
-
-export function HeroDanceVideo() {
-  const [isMobileOrTablet, setIsMobileOrTablet] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [videoFailed, setVideoFailed] = useState(false);
-
-  useEffect(() => {
-    const mobileQuery = window.matchMedia(MOBILE_QUERY);
-    const reducedMotionQuery = window.matchMedia(REDUCED_MOTION_QUERY);
-
-    const syncMediaFlags = () => {
-      setIsMobileOrTablet(mobileQuery.matches);
-      setPrefersReducedMotion(reducedMotionQuery.matches);
-    };
-
-    syncMediaFlags();
-    mobileQuery.addEventListener("change", syncMediaFlags);
-    reducedMotionQuery.addEventListener("change", syncMediaFlags);
-
-    return () => {
-      mobileQuery.removeEventListener("change", syncMediaFlags);
-      reducedMotionQuery.removeEventListener("change", syncMediaFlags);
-    };
-  }, []);
-
-  const showVideo = !isMobileOrTablet && !prefersReducedMotion && !videoFailed;
-
+export function HeroDanceImage() {
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-white/20 bg-slate-950/60 shadow-[0_20px_70px_rgba(14,116,144,0.25)]">
-      <div className="relative aspect-video w-full">
+    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-3xl border border-white/20 bg-[#1d0030] shadow-[0_30px_80px_rgba(217,70,239,0.25)] sm:aspect-[5/4] lg:aspect-[6/5]">
+      <Image
+        src="/images/dance-hero-poster.svg"
+        alt="Vibrant stage lighting glow background"
+        fill
+        sizes="(max-width: 1024px) 100vw, 55vw"
+        className="object-cover"
+        priority
+      />
+
+      <Image
+        src="/images/dance-kids.svg"
+        alt="Stylised young dancers in vibrant Bollywood costumes"
+        fill
+        sizes="(max-width: 1024px) 100vw, 55vw"
+        className="object-contain object-bottom"
+        priority
+      />
+
+      <div className="absolute inset-x-[8%] bottom-[6%] aspect-[3/2]">
         <Image
-          src="/images/dance-hero-poster.svg"
-          alt="Energetic dance stage lighting background"
+          src="/images/dance-adults.svg"
+          alt="Stylised adult dancers performing classical fusion"
           fill
-          sizes="(max-width: 1024px) 100vw, 58vw"
-          className="object-cover"
-          priority
+          sizes="(max-width: 1024px) 92vw, 50vw"
+          className="object-contain object-bottom"
         />
-        {showVideo ? (
-          <video
-            className="absolute inset-0 h-full w-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="none"
-            poster="/images/dance-hero-poster.svg"
-            onError={() => setVideoFailed(true)}
-            aria-label="Hero dance ambience video"
-          >
-            <source src="/videos/dance-hero.webm" type="video/webm" />
-          </video>
-        ) : null}
-        <div className="hero-shimmer pointer-events-none absolute inset-0" />
       </div>
+
+      <div className="hero-shimmer pointer-events-none absolute inset-0" aria-hidden />
+
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_25%,rgba(236,72,153,0.35),transparent_55%),radial-gradient(circle_at_85%_70%,rgba(255,122,24,0.3),transparent_55%)]"
+        aria-hidden
+      />
     </div>
   );
 }
+
+export const HeroDanceVideo = HeroDanceImage;
