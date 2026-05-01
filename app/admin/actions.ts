@@ -7,21 +7,29 @@ import { clearAdminSession, isAdminAuthenticated } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 import { logServerError } from "@/lib/server-logging";
 
-export async function updateEnquiryStatus(formData: FormData) {
+export type UpdateStatusState = {
+  ok: boolean;
+  message: string;
+};
+
+export async function updateEnquiryStatus(
+  _: UpdateStatusState,
+  formData: FormData,
+): Promise<UpdateStatusState> {
   const authed = await isAdminAuthenticated();
   if (!authed) {
-    redirect("/admin/login");
+    return { ok: false, message: "Session expired. Please login again." };
   }
 
   const enquiryId = formData.get("enquiryId");
   const status = formData.get("status");
 
   if (typeof enquiryId !== "string" || typeof status !== "string") {
-    return;
+    return { ok: false, message: "Invalid enquiry payload." };
   }
 
   if (!Object.values(EnquiryStatus).includes(status as EnquiryStatus)) {
-    return;
+    return { ok: false, message: "Invalid status selected." };
   }
 
   try {
@@ -31,27 +39,31 @@ export async function updateEnquiryStatus(formData: FormData) {
     });
   } catch (error) {
     logServerError("admin/updateEnquiryStatus", error);
-    return;
+    return { ok: false, message: "Failed to update student enquiry status." };
   }
 
   revalidatePath("/admin");
+  return { ok: true, message: "Student enquiry status updated." };
 }
 
-export async function updateInstructorEnquiryStatus(formData: FormData) {
+export async function updateInstructorEnquiryStatus(
+  _: UpdateStatusState,
+  formData: FormData,
+): Promise<UpdateStatusState> {
   const authed = await isAdminAuthenticated();
   if (!authed) {
-    redirect("/admin/login");
+    return { ok: false, message: "Session expired. Please login again." };
   }
 
   const enquiryId = formData.get("enquiryId");
   const status = formData.get("status");
 
   if (typeof enquiryId !== "string" || typeof status !== "string") {
-    return;
+    return { ok: false, message: "Invalid enquiry payload." };
   }
 
   if (!Object.values(InstructorEnquiryStatus).includes(status as InstructorEnquiryStatus)) {
-    return;
+    return { ok: false, message: "Invalid status selected." };
   }
 
   try {
@@ -61,10 +73,11 @@ export async function updateInstructorEnquiryStatus(formData: FormData) {
     });
   } catch (error) {
     logServerError("admin/updateInstructorEnquiryStatus", error);
-    return;
+    return { ok: false, message: "Failed to update instructor enquiry status." };
   }
 
   revalidatePath("/admin");
+  return { ok: true, message: "Instructor enquiry status updated." };
 }
 
 export async function logoutAction() {
