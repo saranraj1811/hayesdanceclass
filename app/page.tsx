@@ -124,7 +124,10 @@ export default function Home() {
       <section id="register" className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-16 pt-2 sm:px-6 lg:px-8">
         <div className="rounded-3xl border border-white/20 bg-slate-900/60 p-4 shadow-2xl sm:p-8">
           <h2 className="mb-2 text-2xl font-bold">Register Your Interest</h2>
-          <p className="mb-6 text-slate-200">Join the early list and be first to hear when classes open.</p>
+          <p className="text-slate-200">Join the early list and be first to hear when classes open.</p>
+          <p className="mb-6 mt-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm text-slate-100">
+            📍 Proposed Location: Harlington School, Pinkwell Road, Hayes (tentative)
+          </p>
           <EnquiryForm />
         </div>
       </section>

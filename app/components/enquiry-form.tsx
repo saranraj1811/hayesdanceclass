@@ -126,26 +126,31 @@ export function EnquiryForm() {
           </option>
         </select>
 
-        <select
-          value={form.preferredTime}
-          onChange={(event) =>
-            setForm((prev) => ({ ...prev, preferredTime: event.target.value as FormState["preferredTime"] }))
-          }
-          className="rounded-xl border border-white/30 bg-black/20 px-4 py-3 text-white focus:border-fuchsia-300 focus:outline-none"
-        >
-          <option value="SATURDAY_MORNING" className="text-black">
-            Saturday morning
-          </option>
-          <option value="SATURDAY_AFTERNOON" className="text-black">
-            Saturday afternoon
-          </option>
-          <option value="SUNDAY" className="text-black">
-            Sunday
-          </option>
-          <option value="FLEXIBLE" className="text-black">
-            Flexible
-          </option>
-        </select>
+        <div className="space-y-2">
+          <select
+            value={form.preferredTime}
+            onChange={(event) =>
+              setForm((prev) => ({ ...prev, preferredTime: event.target.value as FormState["preferredTime"] }))
+            }
+            className="w-full rounded-xl border border-white/30 bg-black/20 px-4 py-3 text-white focus:border-fuchsia-300 focus:outline-none"
+          >
+            <option value="SATURDAY_MORNING" className="text-black">
+              Saturday Morning (10 AM - 12 PM)
+            </option>
+            <option value="SATURDAY_AFTERNOON" className="text-black">
+              Saturday Afternoon (12 PM - 2 PM)
+            </option>
+            <option value="SUNDAY" className="text-black">
+              Sunday (open to)
+            </option>
+            <option value="FLEXIBLE" className="text-black">
+              Flexible
+            </option>
+          </select>
+          <p className="text-xs text-slate-300">
+            Planned start is Saturday sessions in Hayes. Final timing will be confirmed based on demand.
+          </p>
+        </div>
       </div>
 
       <textarea
