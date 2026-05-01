@@ -10,6 +10,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@marsidev/react-turnstile": "^1.5.1",
     "@prisma/client": "^6.19.3",
     "@vercel/analytics": "^2.0.1",
     "lucide-react": "^1.14.0",

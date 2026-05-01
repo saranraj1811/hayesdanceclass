@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { OptionalTurnstile } from "@/app/components/optional-turnstile";
 
 type InstructorFormState = {
   fullName: string;
@@ -15,6 +16,7 @@ type InstructorFormState = {
   portfolioUrl: string;
   experienceMessage: string;
   website: string;
+  companyWebsite: string;
 };
 
 type ApiResponse = {
@@ -37,13 +39,20 @@ const initialState: InstructorFormState = {
   portfolioUrl: "",
   experienceMessage: "",
   website: "",
+  companyWebsite: "",
 };
+
+const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 export function InstructorForm() {
   const [form, setForm] = useState<InstructorFormState>(initialState);
+  const [formOpenedAt, setFormOpenedAt] = useState(() => Date.now());
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   function toggleStyle(style: string) {
     setForm((prev) => {
@@ -59,13 +68,24 @@ export function InstructorForm() {
     event.preventDefault();
     setError("");
     setSuccess(false);
+    setSuccessMessage("");
+
+    if (turnstileSiteKey && !turnstileToken) {
+      setError("Please complete the verification step.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       const response = await fetch("/api/instructor-enquiries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          formOpenedAt,
+          turnstileToken: turnstileToken ?? undefined,
+        }),
       });
 
       const payload = (await response.json()) as ApiResponse;
@@ -74,8 +94,14 @@ export function InstructorForm() {
         return;
       }
 
+      setSuccessMessage(
+        payload.message ?? "Thank you! Your instructor interest has been submitted successfully.",
+      );
       setSuccess(true);
       setForm(initialState);
+      setFormOpenedAt(Date.now());
+      setTurnstileToken(null);
+      setTurnstileResetKey((key) => key + 1);
     } catch {
       setError("Network issue. Please check your internet and try again.");
     } finally {
@@ -94,10 +120,20 @@ export function InstructorForm() {
         name="website"
         aria-hidden
       />
+      <input
+        value={form.companyWebsite}
+        onChange={(event) => setForm((prev) => ({ ...prev, companyWebsite: event.target.value }))}
+        tabIndex={-1}
+        autoComplete="off"
+        className="hidden"
+        name="companyWebsite"
+        aria-hidden
+      />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <input
           required
+          maxLength={100}
           value={form.fullName}
           onChange={(event) => setForm((prev) => ({ ...prev, fullName: event.target.value }))}
           placeholder="Full name"
@@ -106,6 +142,7 @@ export function InstructorForm() {
         <input
           required
           type="email"
+          maxLength={254}
           value={form.email}
           onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
           placeholder="Email address"
@@ -113,6 +150,7 @@ export function InstructorForm() {
         />
         <input
           required
+          maxLength={20}
           value={form.phone}
           onChange={(event) => setForm((prev) => ({ ...prev, phone: event.target.value }))}
           placeholder="Phone number"
@@ -120,6 +158,7 @@ export function InstructorForm() {
         />
         <input
           required
+          maxLength={100}
           value={form.location}
           onChange={(event) => setForm((prev) => ({ ...prev, location: event.target.value }))}
           placeholder="Location / Area"
@@ -181,39 +220,46 @@ export function InstructorForm() {
           value={form.instagramUrl}
           onChange={(event) => setForm((prev) => ({ ...prev, instagramUrl: event.target.value }))}
           placeholder="Instagram link (optional)"
+          maxLength={500}
           className="rounded-xl border border-white/30 bg-black/20 px-4 py-3 text-white placeholder:text-white/60 focus:border-fuchsia-300 focus:outline-none"
         />
         <input
           value={form.youtubeUrl}
           onChange={(event) => setForm((prev) => ({ ...prev, youtubeUrl: event.target.value }))}
           placeholder="YouTube link (optional)"
+          maxLength={500}
           className="rounded-xl border border-white/30 bg-black/20 px-4 py-3 text-white placeholder:text-white/60 focus:border-fuchsia-300 focus:outline-none"
         />
         <input
           value={form.facebookUrl}
           onChange={(event) => setForm((prev) => ({ ...prev, facebookUrl: event.target.value }))}
           placeholder="Facebook link (optional)"
+          maxLength={500}
           className="rounded-xl border border-white/30 bg-black/20 px-4 py-3 text-white placeholder:text-white/60 focus:border-fuchsia-300 focus:outline-none"
         />
         <input
           value={form.portfolioUrl}
           onChange={(event) => setForm((prev) => ({ ...prev, portfolioUrl: event.target.value }))}
           placeholder="Website / Portfolio link (optional)"
+          maxLength={500}
           className="rounded-xl border border-white/30 bg-black/20 px-4 py-3 text-white placeholder:text-white/60 focus:border-fuchsia-300 focus:outline-none"
         />
       </div>
 
       <textarea
         value={form.experienceMessage}
+        maxLength={1000}
         onChange={(event) => setForm((prev) => ({ ...prev, experienceMessage: event.target.value }))}
         placeholder="Tell us about your teaching experience"
         rows={4}
         className="w-full rounded-xl border border-white/30 bg-black/20 px-4 py-3 text-white placeholder:text-white/60 focus:border-fuchsia-300 focus:outline-none"
       />
 
+      <OptionalTurnstile siteKey={turnstileSiteKey} onToken={setTurnstileToken} resetKey={turnstileResetKey} />
+
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || (Boolean(turnstileSiteKey) && !turnstileToken)}
         className="w-full rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-amber-400 px-6 py-3 font-semibold text-white shadow-[0_0_25px_rgba(217,70,239,0.6)] transition hover:scale-[1.01] hover:shadow-[0_0_30px_rgba(245,158,11,0.8)] disabled:cursor-not-allowed disabled:opacity-80"
       >
         {isSubmitting ? "Submitting..." : "Submit Instructor Interest"}
@@ -221,7 +267,7 @@ export function InstructorForm() {
 
       {success ? (
         <p className="rounded-xl border border-emerald-300/40 bg-emerald-500/20 px-4 py-3 text-sm text-emerald-100">
-          Thank you! Your instructor interest has been submitted successfully.
+          {successMessage}
         </p>
       ) : null}
       {error ? (

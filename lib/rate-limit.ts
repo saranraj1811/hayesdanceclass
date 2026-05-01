@@ -3,8 +3,8 @@ type RateLimitRecord = {
   resetAt: number;
 };
 
-const WINDOW_MS = 15 * 60 * 1000;
-const MAX_REQUESTS = 5;
+const WINDOW_MS = 10 * 60 * 1000;
+const MAX_REQUESTS = 3;
 
 const globalForRateLimit = globalThis as unknown as {
   enquiryRateMap?: Map<string, RateLimitRecord>;

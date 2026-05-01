@@ -1,9 +1,15 @@
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
+import { warnBlockedSubmission } from "@/lib/anti-spam-log";
+import { hasRecentInstructorDuplicate } from "@/lib/duplicate-check";
 import { prisma } from "@/lib/prisma";
 import { isRateLimited } from "@/lib/rate-limit";
-import { logServerError } from "@/lib/server-logging";
+import { isTurnstileConfigured, verifyTurnstileToken } from "@/lib/turnstile";
 import { instructorEnquirySchema } from "@/lib/validations";
+import { logServerError } from "@/lib/server-logging";
+
+const MIN_FORM_MS = 3000;
+const CLOCK_SKEW_MS = 120_000;
 
 function getClientIp(headers: Headers): string {
   const forwardedFor = headers.get("x-forwarded-for");
@@ -29,19 +35,58 @@ export async function POST(request: Request) {
     }
 
     const data = parsed.data;
-    if (data.website) {
+    const honeypotHit = Boolean(data.website?.trim()) || Boolean(data.companyWebsite?.trim());
+    if (honeypotHit) {
+      warnBlockedSubmission("instructor", "honeypot");
       return NextResponse.json({ success: true, message: "Submitted successfully." });
+    }
+
+    if (isTurnstileConfigured()) {
+      const ok = await verifyTurnstileToken(data.turnstileToken);
+      if (!ok) {
+        warnBlockedSubmission("instructor", "turnstile");
+        return NextResponse.json(
+          { success: false, message: "Verification failed. Please refresh and try again." },
+          { status: 400 },
+        );
+      }
+    }
+
+    const now = Date.now();
+    if (data.formOpenedAt > now + CLOCK_SKEW_MS) {
+      warnBlockedSubmission("instructor", "timing");
+      return NextResponse.json(
+        { success: false, message: "Please take a moment to complete the form." },
+        { status: 400 },
+      );
+    }
+
+    if (now - data.formOpenedAt < MIN_FORM_MS) {
+      warnBlockedSubmission("instructor", "timing");
+      return NextResponse.json(
+        { success: false, message: "Please take a moment to complete the form." },
+        { status: 400 },
+      );
     }
 
     const ip = getClientIp(request.headers);
     if (isRateLimited(`${ip}:instructor`)) {
+      warnBlockedSubmission("instructor", "rate_limit");
       return NextResponse.json(
         {
           success: false,
-          message: "Too many attempts. Please try again in a few minutes.",
+          message: "Too many submissions. Please try again later.",
         },
         { status: 429 },
       );
+    }
+
+    if (await hasRecentInstructorDuplicate(data.email, data.phone)) {
+      warnBlockedSubmission("instructor", "duplicate");
+      return NextResponse.json({
+        success: true,
+        message: "We already received your interest. Thank you.",
+      });
     }
 
     await prisma.instructorEnquiry.create({

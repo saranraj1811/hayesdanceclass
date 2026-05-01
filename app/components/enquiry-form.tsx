@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { OptionalTurnstile } from "@/app/components/optional-turnstile";
 
 type FormState = {
   fullName: string;
@@ -11,6 +12,7 @@ type FormState = {
   preferredTime: "SATURDAY_MORNING" | "SATURDAY_AFTERNOON" | "SUNDAY" | "FLEXIBLE";
   message: string;
   website: string;
+  companyWebsite: string;
 };
 
 type EnquiryApiResponse = {
@@ -27,25 +29,43 @@ const initialState: FormState = {
   preferredTime: "FLEXIBLE",
   message: "",
   website: "",
+  companyWebsite: "",
 };
+
+const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 export function EnquiryForm() {
   const [form, setForm] = useState<FormState>(initialState);
+  const [formOpenedAt, setFormOpenedAt] = useState(() => Date.now());
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
     setSuccess(false);
+    setSuccessMessage("");
+
+    if (turnstileSiteKey && !turnstileToken) {
+      setError("Please complete the verification step.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       const response = await fetch("/api/enquiries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          formOpenedAt,
+          turnstileToken: turnstileToken ?? undefined,
+        }),
       });
 
       const payload = (await response.json()) as EnquiryApiResponse;
@@ -54,8 +74,15 @@ export function EnquiryForm() {
         return;
       }
 
+      setSuccessMessage(
+        payload.message ??
+          "Thank you! We've received your interest and will contact you when classes are ready.",
+      );
       setSuccess(true);
       setForm(initialState);
+      setFormOpenedAt(Date.now());
+      setTurnstileToken(null);
+      setTurnstileResetKey((key) => key + 1);
     } catch {
       setError("Network issue. Please check your internet and try again.");
     } finally {
@@ -74,10 +101,20 @@ export function EnquiryForm() {
         name="website"
         aria-hidden
       />
+      <input
+        value={form.companyWebsite}
+        onChange={(event) => setForm((prev) => ({ ...prev, companyWebsite: event.target.value }))}
+        tabIndex={-1}
+        autoComplete="off"
+        className="hidden"
+        name="companyWebsite"
+        aria-hidden
+      />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <input
           required
+          maxLength={100}
           value={form.fullName}
           onChange={(event) => setForm((prev) => ({ ...prev, fullName: event.target.value }))}
           placeholder="Full name"
@@ -86,6 +123,7 @@ export function EnquiryForm() {
         <input
           required
           type="email"
+          maxLength={254}
           value={form.email}
           onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
           placeholder="Email address"
@@ -93,6 +131,7 @@ export function EnquiryForm() {
         />
         <input
           required
+          maxLength={20}
           value={form.phone}
           onChange={(event) => setForm((prev) => ({ ...prev, phone: event.target.value }))}
           placeholder="Phone number"
@@ -100,6 +139,7 @@ export function EnquiryForm() {
         />
         <input
           required
+          maxLength={100}
           value={form.location}
           onChange={(event) => setForm((prev) => ({ ...prev, location: event.target.value }))}
           placeholder="Location / Area"
@@ -155,15 +195,18 @@ export function EnquiryForm() {
 
       <textarea
         value={form.message}
+        maxLength={1000}
         onChange={(event) => setForm((prev) => ({ ...prev, message: event.target.value }))}
         placeholder="Message (optional)"
         rows={4}
         className="w-full rounded-xl border border-white/30 bg-black/20 px-4 py-3 text-white placeholder:text-white/60 focus:border-fuchsia-300 focus:outline-none"
       />
 
+      <OptionalTurnstile siteKey={turnstileSiteKey} onToken={setTurnstileToken} resetKey={turnstileResetKey} />
+
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || (Boolean(turnstileSiteKey) && !turnstileToken)}
         className="w-full rounded-full bg-gradient-to-r from-fuchsia-500 via-pink-500 to-orange-400 px-6 py-3 font-semibold text-white shadow-[0_0_25px_rgba(236,72,153,0.6)] transition hover:scale-[1.01] hover:shadow-[0_0_30px_rgba(249,115,22,0.8)] disabled:cursor-not-allowed disabled:opacity-80"
       >
         {isSubmitting ? "Submitting..." : "Submit Interest"}
@@ -171,7 +214,7 @@ export function EnquiryForm() {
 
       {success ? (
         <p className="rounded-xl border border-emerald-300/40 bg-emerald-500/20 px-4 py-3 text-sm text-emerald-100">
-          Thank you! We&apos;ve received your interest and will contact you when classes are ready.
+          {successMessage}
         </p>
       ) : null}
 
