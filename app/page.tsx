@@ -1,5 +1,7 @@
+import Image from "next/image";
 import { Clock3, MapPin, MicVocal, Sparkles, Star, Users } from "lucide-react";
 import { EnquiryForm } from "@/app/components/enquiry-form";
+import { HeroDanceVideo } from "@/app/components/hero-dance-video";
 
 export default function Home() {
   return (
@@ -23,22 +25,25 @@ export default function Home() {
       </div>
 
       <section className="mx-auto max-w-6xl px-4 pb-16 pt-20 sm:px-6 lg:px-8">
-        <div className="rounded-3xl border border-white/15 bg-white/5 px-6 py-14 shadow-2xl backdrop-blur-md sm:px-10">
-          <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-pink-100">
-            <Sparkles size={14} /> Hayes & Harlington
-          </p>
-          <h1 className="mt-5 max-w-3xl text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
-            Bollywood & South Indian Dance Classes Coming Soon to Hayes
-          </h1>
-          <p className="mt-5 max-w-2xl text-base text-slate-100 sm:text-lg">
-            Register your interest for weekly dance sessions for kids and adults in Hayes & Harlington.
-          </p>
-          <a
-            href="#register"
-            className="mt-8 inline-flex rounded-full bg-gradient-to-r from-fuchsia-500 via-pink-500 to-orange-500 px-8 py-3 text-sm font-bold uppercase tracking-wide shadow-[0_0_35px_rgba(236,72,153,0.6)] transition hover:scale-105 hover:shadow-[0_0_40px_rgba(249,115,22,0.85)]"
-          >
-            Register Interest
-          </a>
+        <div className="grid items-center gap-8 rounded-3xl border border-white/15 bg-white/5 px-6 py-10 shadow-2xl backdrop-blur-md sm:px-10 lg:grid-cols-[1.1fr_0.9fr]">
+          <div>
+            <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-pink-100">
+              <Sparkles size={14} /> Hayes & Harlington
+            </p>
+            <h1 className="mt-5 max-w-3xl text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
+              Bollywood & South Indian Dance Classes Coming Soon to Hayes
+            </h1>
+            <p className="mt-5 max-w-2xl text-base text-slate-100 sm:text-lg">
+              Register your interest for weekly dance sessions for kids and adults in Hayes & Harlington.
+            </p>
+            <a
+              href="#register"
+              className="mt-8 inline-flex rounded-full bg-gradient-to-r from-fuchsia-500 via-pink-500 to-orange-500 px-8 py-3 text-sm font-bold uppercase tracking-wide shadow-[0_0_35px_rgba(236,72,153,0.6)] transition hover:scale-105 hover:shadow-[0_0_40px_rgba(249,115,22,0.85)]"
+            >
+              Register Interest
+            </a>
+          </div>
+          <HeroDanceVideo />
         </div>
       </section>
 
@@ -46,29 +51,73 @@ export default function Home() {
         <h2 className="mb-5 text-2xl font-bold">Why Join</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { title: "Kids & Adults", icon: Users },
-            { title: "Bollywood & South Indian Styles", icon: MicVocal },
-            { title: "Weekend Classes", icon: Clock3 },
-            { title: "Hayes & Harlington Location", icon: MapPin },
+            {
+              title: "Kids & Adults",
+              icon: Users,
+              image: "/images/dance-kids.webp",
+              alt: "Kids dance class silhouettes with colourful stage lights",
+            },
+            {
+              title: "Bollywood & South Indian Styles",
+              icon: MicVocal,
+              image: "/images/bollywood-style.webp",
+              alt: "Bollywood style dance visuals with vibrant colors",
+            },
+            {
+              title: "Weekend Classes",
+              icon: Clock3,
+              image: "/images/dance-adults.webp",
+              alt: "Adults dance group with dramatic warm stage lighting",
+            },
+            {
+              title: "Hayes & Harlington Location",
+              icon: MapPin,
+              image: "/images/south-indian-style.webp",
+              alt: "South Indian dance inspired scene with festival colors",
+            },
           ].map((item) => (
             <article
               key={item.title}
-              className="group rounded-2xl border border-white/15 bg-white/5 p-5 transition hover:-translate-y-1 hover:border-pink-300/60 hover:bg-white/10"
+              className="group overflow-hidden rounded-2xl border border-white/15 bg-white/5 transition hover:-translate-y-1 hover:border-pink-300/60 hover:bg-white/10"
             >
-              <item.icon className="text-fuchsia-200 transition group-hover:text-orange-200" size={24} />
-              <h3 className="mt-3 font-semibold">{item.title}</h3>
+              <div className="relative h-36">
+                <Image
+                  src={item.image}
+                  alt={item.alt}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  className="object-cover transition duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 to-transparent" />
+              </div>
+              <div className="p-5">
+                <item.icon className="text-fuchsia-200 transition group-hover:text-orange-200" size={24} />
+                <h3 className="mt-3 font-semibold">{item.title}</h3>
+              </div>
             </article>
           ))}
         </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="rounded-3xl border border-orange-200/30 bg-orange-100/10 p-7 backdrop-blur-md">
-          <h2 className="text-2xl font-bold">Coming Soon - Early Access</h2>
-          <p className="mt-3 max-w-3xl text-slate-100">
-            We are planning a brand-new local dance class community in Hayes & Harlington. Your enquiry helps us shape
-            class timings, age groups, and style mix for launch.
-          </p>
+        <div className="grid gap-6 rounded-3xl border border-orange-200/30 bg-orange-100/10 p-7 backdrop-blur-md lg:grid-cols-[1fr_0.8fr]">
+          <div>
+            <h2 className="text-2xl font-bold">Coming Soon - Early Access</h2>
+            <p className="mt-3 max-w-3xl text-slate-100">
+              We are planning a brand-new local dance class community in Hayes & Harlington. Your enquiry helps us shape
+              class timings, age groups, and style mix for launch.
+            </p>
+          </div>
+          <div className="relative h-48 overflow-hidden rounded-2xl border border-orange-100/30">
+            <Image
+              src="/images/dance-adults.webp"
+              alt="Stage lighting and dancer silhouettes in warm gold and pink tones"
+              fill
+              sizes="(max-width: 1024px) 100vw, 35vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-tr from-fuchsia-900/40 via-transparent to-amber-300/20" />
+          </div>
         </div>
       </section>
 
