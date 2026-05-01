@@ -331,19 +331,19 @@ export default function Home() {
             ].map((item) => (
               <article
                 key={item.title}
-                className="group overflow-hidden rounded-3xl border border-white/15 bg-white/[0.04] backdrop-blur-md transition hover:scale-[1.04] hover:border-fuchsia-300/60 hover:shadow-[0_0_25px_rgba(236,47,215,0.35)]"
+                className="group overflow-hidden rounded-3xl border border-white/15 bg-[#1a0028] transition hover:border-fuchsia-300/60 hover:shadow-[0_0_25px_rgba(236,47,215,0.35)]"
               >
-                <div className="relative h-52">
+                <div className="relative h-52 overflow-hidden">
                   <Image
                     src={item.image}
                     alt={item.alt}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
-                    className="object-cover object-top transition duration-500 group-hover:scale-110"
+                    className="block object-cover object-top transition duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#160020]/90 via-[#160020]/20 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#1a0028] to-transparent" />
                 </div>
-                <div className="space-y-2 p-5">
+                <div className="-mt-px space-y-2 bg-[#1a0028] p-5">
                   <h3 className="text-base font-semibold text-white">{item.title}</h3>
                   <p className="text-sm leading-6 text-slate-300">{item.description}</p>
                 </div>
